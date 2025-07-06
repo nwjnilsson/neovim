@@ -42,7 +42,7 @@ lsp.on_attach(function(client, bufnr)
     vim.lsp.buf.format({
       async = false,
       timeout_ms = 10000,
-      filter = allow_format({ 'clangd', 'yamlls', 'pylsp', 'nil', 'lua_ls'})
+      filter = allow_format({ 'clangd', 'yamlls', 'pylsp', 'nil', 'lua_ls' })
     })
   end, opts)
 end)
@@ -57,8 +57,15 @@ lspconf.nil_ls.setup({})
 lspconf.yamlls.setup({})
 lspconf.pylsp.setup({})
 lspconf.clangd.setup({})
-lspconf.lua_ls.setup({})
-
+lspconf.lua_ls.setup({
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim' }
+      }
+    }
+  }
+})
 
 require('mason-lspconfig').setup({
   handlers = {
@@ -74,7 +81,7 @@ require('mason-lspconfig').setup({
       vim.cmd [[ autocmd BufRead,BufNewFile *.cppm set filetype=cppm ]]
       lspconf.clangd.setup({
         filetypes = { "h", "hpp", "c", "cpp", "cxx", "cppm", "mpp", "ixx" },
-        cmd = {"clangd", "--header-insertion=never" }
+        cmd = { "clangd", "--header-insertion=never" }
       })
     end,
   }
@@ -102,17 +109,12 @@ cmp_mappings['<S-Tab>'] = nil
 
 cmp.setup({
   sources = {
-    {name = 'nvim_lsp'},
-    {name = 'luasnip'},
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
   },
-  mapping = cmp_mappings
+  mapping = cmp_mappings,
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  }
 })
-
--- vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
---   vim.lsp.handlers.hover,
---   {border = 'rounded'}
--- )
--- vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
---   vim.lsp.handlers.hover,
---   {border = 'rounded'}
--- )
